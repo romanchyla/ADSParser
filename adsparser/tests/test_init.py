@@ -38,6 +38,8 @@ class TestServices(unittest.TestCase):
                                  (
                                  '(nanotube or "domain wall" or "nanowire magnetism" or micromagnetism) and not (carbon) and not (superconductivity or superconductor or Majorana)',
                                  '(nanotube OR "domain wall" OR "nanowire magnetism" OR micromagnetism) AND NOT carbon AND NOT (superconductivity OR superconductor OR Majorana)'),
+                                 ('"machine learning" "neural networks" ORCID "text extraction"',
+                                  '("machine learning" OR "neural networks" OR ORCID OR "text extraction")'),
                                  ]:
             output = adsparser.parse_classic_keywords(test)
 

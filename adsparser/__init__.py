@@ -25,7 +25,7 @@ grammar = Lark(r"""
 
     operator: OPERATOR | NEWLINE
 
-    OPERATOR.2: "AND NOT" | "and not" | "and" | "AND" | "or" | "OR" | "not" | "NOT"  
+    OPERATOR.2: "AND NOT " | "and not " | "and " | "AND " | "or " | "OR " | "not " | "NOT "  
 
     %import common.LETTER
     %import common.ESCAPED_STRING
@@ -163,9 +163,9 @@ class TreeVisitor(Visitor):
         if v in ['\n', '\r', '\r\n']:
             node.newline = True
             v = 'OR'
-        elif v not in ['AND', 'OR', 'NOT', 'AND NOT']:
+        elif v.strip() not in ['AND', 'OR', 'NOT', 'AND NOT']:
             v = 'OR'
         else:
-            v = v
+            v = v.strip()
 
         node.output = v

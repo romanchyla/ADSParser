@@ -1,4 +1,5 @@
 from lark import Lark, Transformer, v_args, Visitor
+import re
 
 grammar = Lark(r"""
 
@@ -46,22 +47,26 @@ def parse_classic_keywords(query):
     :param query: string; Classic-style keyword query
     :return: string; BBB-style keyword query
     """
-    strip_operators = query.split('\r\n')
-    if len(strip_operators) > 1:
-        tmp = []
-        for s in strip_operators:
-            s = s.strip()
-            if s.endswith('OR') or s.endswith('or'):
-                s = s[:-2]
-            if s.startswith('OR') or s.startswith('or'):
-                s = s[2:]
-            if s.endswith('AND') or s.endswith('and'):
-                s = s[:-3]
-            if s.startswith('AND') or s.startswith('and'):
-                s = s[3:]
-            tmp.append(s)
-        query = '\r\n'.join(tmp)
-    clean_query = query.replace(',', ' ').replace(') (', ') OR (').strip()
+    # ignore underscores (to be used later as markers)
+    clean_query = query.replace('_', ' ')
+    
+    # now deal with some ADS-classic query peculiarities that we
+    # have actually found in the query profiles of ADS users
+
+    # 1. newlines are treated as space (1727 instances)
+    clean_query = clean_query.replace('\r\n', ' ')
+
+    # 2. commas are simply used to separate keywords (274 instances)
+    clean_query = clean_query.replace(',', ' ').replace(') (', ') OR (')
+
+    # 3. a+b should be treated as "a +b" (165 instances)
+    #    exception: "G79.29+0" 
+    clean_query = re.sub(r'([a-zA-Z"])\+',r'\1 +', clean_query)
+
+    # 4. 'a phrase' should be treated as "a phrase"
+    #    exception: "Zel'dovich", "green's function"
+    clean_query = re.sub(r"(\w)'(\w)", r"\1_\2", clean_query).replace("'", '"').replace('_', "'")
+    
     tree = _parse_classic_keywords_to_tree(clean_query)
 
     v = TreeVisitor()

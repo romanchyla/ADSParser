@@ -72,6 +72,16 @@ def parse_classic_keywords(query):
     v = TreeVisitor()
     new_query = v.visit(tree).output
 
+    # finally, tweak output to fix edge cases
+    
+    # 1. (a OR -b) is rewritten as (a -b)
+    new_query = new_query.replace(' OR -', ' -')
+
+    # 2. a leading minus is ignored at the moment, so add a wildcard
+    new_query = new_query.replace('(-', '(* -')
+    if new_query.startswith('-'):
+        new_query = '* ' + new_query
+    
     return new_query
 
 

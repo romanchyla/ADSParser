@@ -5,36 +5,25 @@ grammar = Lark(r"""
 
 
     start: clause+ (operator clause)*
-
-    clause: ("(" clause (operator? clause)* ")") 
-        | query+
-
-    query: qterm
-
-    qterm: anyterm -> qterm | phrase | PREPEND -> prepend | FORBIDDEN_LINE -> line
-
+    clause: (modifier? ("(" clause (operator? clause)* ")")) 
+        | query
+    query: modifier? qterm
+    modifier: PREPEND
+    qterm: anyterm -> qterm | phrase | FORBIDDEN_LINE -> line
     PREPEND.2: /=/ | /\+/ | /\-/
-
     FORBIDDEN_LINE: /\[\w+\]/ | /\[\w+/ | /\w+\]/
-
     phrase: DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING
-
     DOUBLE_QUOTED_STRING.3  : /"[^"]*"/ | /\+"[^"]*"/ | /\-"[^"]*"/
     SINGLE_QUOTED_STRING.3  : /'[^']*'/ | /\+'[^']*'/ | /\-'[^']*'/
-
     anyterm: /[^)^\]\[ \(\n\r]+/
-
     operator: OPERATOR | NEWLINE
-
     OPERATOR.2: "AND NOT " | "and not " | "and " | "AND " | "or " | "OR " | "not " | "NOT "  
-
     %import common.LETTER
     %import common.ESCAPED_STRING
     %import common.FLOAT
     %import common.DIGIT
     %import common.WS_INLINE
     %import common.NEWLINE
-
     %ignore WS_INLINE
 
     """, parser="lalr")
@@ -128,6 +117,8 @@ class TreeVisitor(Visitor):
         ops = ['AND', 'OR', 'NOT', 'AND NOT']
         prepend = ['=', '+', '-']
         for x in node.children:
+            if x.data == 'modifier':
+                continue
             if hasattr(x, 'output'):
                 out.append(getattr(x, 'output'))
         output = []
@@ -154,9 +145,12 @@ class TreeVisitor(Visitor):
             node.output = "({0})".format(' '.join(output))
         else:
             node.output = "{0}".format(' '.join(output))
+        
+        if node.children[0].data == 'modifier':
+            node.output = node.children[0].output + node.output
 
     def query(self, node):
-        node.output = node.children[0].output
+        node.output = ''.join([x.output for x in node.children])
 
     def qterm(self, node):
         node.output = node.children[0].output
@@ -167,7 +161,7 @@ class TreeVisitor(Visitor):
     def phrase(self, node):
         node.output = node.children[0].value.strip()
 
-    def prepend(self, node):
+    def modifier(self, node):
         node.output = node.children[0].value.strip()
 
     def line(self, node):

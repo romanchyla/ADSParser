@@ -4,15 +4,17 @@ import adsparser
 
 class TestServices(unittest.TestCase):
     def test_parse(self):
-        for (test, expected) in [('one two', '(one OR two)'),
+        for (test, expected) in [
+                                 ('one +(two three)', 'one +(two OR three)'),
+                                 ('one two', 'one two'),
                                  ('one OR two', 'one OR two'),
                                  ('one NOT three', 'one NOT three'),
                                  ('(one)', 'one'),
-                                 ('(one two)', '(one OR two)'),
-                                 ('((one two))', '(one OR two)'),
-                                 ('(((one two)))', '(one OR two)'),
-                                 ('(one (two three))', '(one OR (two OR three))'),
-                                 ('(one (two OR three))', '(one OR (two OR three))'),
+                                 ('(one two)', 'one OR two'), # different treatment in a clause
+                                 ('((one two))', 'one two'),
+                                 ('(((one two)))', '(one two)'),
+                                 ('(one (two three))', '(one (two three))'),
+                                 ('(one (two OR three))', '(one (two OR three))'),
                                  ('(one (two OR three and four))', '(one OR (two OR three AND four))'),
                                  ('((foo AND bar) OR (baz) OR a OR b OR c)', '((foo AND bar) OR baz OR a OR b OR c)'),
                                  ('LISA +\"gravitational wave\" AND \"gravity wave\"',
@@ -36,16 +38,18 @@ class TestServices(unittest.TestCase):
                                  '(nanotube OR "domain wall" OR "nanowire magnetism" OR micromagnetism) AND NOT carbon AND NOT (superconductivity OR superconductor OR Majorana)'),
                                  ('"machine learning" "neural networks" ORCID "text extraction"',
                                   '("machine learning" OR "neural networks" OR ORCID OR "text extraction")'),
+                                 ('one +two', '(one OR +two)'),
+                                 ('one +(two three)', '(one OR +(two three))'),
+                                 ('+("whistler precursor" and shock) or +(whistler and shock) or +(("interplanetary shock" or "bow shock") and whistler) or +("lower hybrid" and shock) or +("modified two stream" and shock) or +("drift instability" and shock)', '')
                                  ]:
             output = adsparser.parse_classic_keywords(test)
-
             self.assertEquals(output, expected)
 
             
     def test_multiline(self):
     	for (test, expected) in [
                 ("+EUV coronal waves \r\n +Dimmings\r\nDimming +Mass Evacuation\r\n+Eruption prominence",
-                 '(+EUV OR coronal OR waves OR +Dimmings OR Dimming OR +Mass OR Evacuation OR +Eruption OR prominence)'),
+                 '+EUV coronal waves +Dimmings Dimming +Mass Evacuation +Eruption prominence'),
                 ('"solar flare" OR\r\n"solar dynamo" OR\r\n"magnetic reconnection"',
                  '"solar flare" OR "solar dynamo" OR "magnetic reconnection"'),
         ]:
@@ -55,12 +59,12 @@ class TestServices(unittest.TestCase):
     def test_singlequote(self):
         for (test, expected) in [
                 ("'star formation' cluster region young",
-                 '("star formation" OR cluster OR region OR young)'),
+                 '"star formation" cluster region young'),
                 ("'intermediate seyfert' 'seyfert 1.8' 'seyfert'",
-                 '("intermediate seyfert" OR "seyfert 1.8" OR "seyfert")'),
+                 '"intermediate seyfert" "seyfert 1.8" "seyfert"'),
                 # counter example
                 ('+"Sunyaev Zel\'dovich" "green\'s function"',
-                 '(+"Sunyaev Zel\'dovich" OR "green\'s function")'),
+                 '+"Sunyaev Zel\'dovich" "green\'s function"'),
         ]:
             output = adsparser.parse_classic_keywords(test)
             self.assertEquals(output, expected)
@@ -68,12 +72,12 @@ class TestServices(unittest.TestCase):
     def test_plus(self):
         for (test, expected) in [
                 ('+"Angular Momentum"+"evolution"',
-                 '(+"Angular Momentum" OR +"evolution")'),
+                 '+"Angular Momentum" +"evolution"'),
                 ('+cosmology+review',
-                 '(+cosmology OR +review)'),
+                 '+cosmology +review'),
                 # counter example
                 ("+LBV 'luminous blue variable' or G79.29+0.46",
-                 '(+LBV OR "luminous blue variable") OR G79.29+0.46'),
+                 '+LBV "luminous blue variable" OR G79.29+0.46'),
         ]:
             output = adsparser.parse_classic_keywords(test)
             self.assertEquals(output, expected)
@@ -81,17 +85,17 @@ class TestServices(unittest.TestCase):
     def test_minus(self):
         for (test, expected) in [
                 ('exoplanet -star',
-                 '(exoplanet -star)'),
+                 'exoplanet -star'),
                 ('exoplanet -"stellar evolution"',
-                 '(exoplanet -"stellar evolution")'),
+                 'exoplanet -"stellar evolution"'),
                 ('stellar-evolution +exoplanet',
-                 '(stellar-evolution OR +exoplanet)'),
+                 'stellar-evolution +exoplanet'),
                 ('-this AND that',
                  '* -this AND that'),
                 ('-this OR that AND (-foo OR bar)',
                  '* -this OR that AND (* -foo OR bar)'),
                 ('-this that',
-                 '(* -this OR that)'),
+                 '* -this that'),
         ]:
             output = adsparser.parse_classic_keywords(test)
             self.assertEquals(output, expected)

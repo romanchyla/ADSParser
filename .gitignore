@@ -105,3 +105,4 @@ logs/
 python/
 **/.DS_Store
 *.idea
+adsparser/tests/data/tmp/

@@ -135,7 +135,7 @@ def parse_classic_keywords(query):
         # Empty
         new_query = clean_query
 
-    return new_query.encode('utf-8')
+    return new_query
 
 
 def _parse_classic_keywords_to_tree(data):

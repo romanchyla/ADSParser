@@ -19647,8 +19647,8 @@ classic.: +pulsar magneter glitches "neutron star" "timing noise"
 modern..: (+pulsar OR magneter OR glitches OR "neutron star" OR "timing noise")
 numFound: 40171
 --------------------------------------------------------------------------------
-classic.: +meteorites "aqueous alteration" "MÃ¶ssbauer spectroscopy" angrites CV
-modern..: (+meteorites OR "aqueous alteration" OR "MÃÂ¶ssbauer spectroscopy" OR angrites OR CV)
+classic.: +meteorites "aqueous alteration" "Máéíssbauer spectroscopy" angrites CV
+modern..: (+meteorites OR "aqueous alteration" OR "Máéíssbauer spectroscopy" OR angrites OR CV)
 numFound: 49772
 --------------------------------------------------------------------------------
 classic.: AMS CREAM LSST PAMELA "dark energy" "cosmic ray" "cosmi rays" "dark matter" MCMC
@@ -25551,8 +25551,8 @@ classic.: eclipsing binaries binary stars
 modern..: (eclipsing OR binaries OR binary OR stars)
 numFound: 699049
 --------------------------------------------------------------------------------
-classic.: "Mï¿½ssbauer spectroscopy" "infrared spectroscopy" pyroxenes exsolution chromite
-modern..: ("MÃ¯Â¿Â½ssbauer spectroscopy" OR "infrared spectroscopy" OR pyroxenes OR exsolution OR chromite)
+classic.: "Massbauer spectroscopy" "infrared spectroscopy" pyroxenes exsolution chromite
+modern..: ("Massbauer spectroscopy" OR "infrared spectroscopy" OR pyroxenes OR exsolution OR chromite)
 numFound: 73642
 --------------------------------------------------------------------------------
 classic.: "neutron star mergers"\r\n"compact object mergers"\r\nkilonova kilonovae\r\nsupernova supernovae\r\nradiation transport
@@ -29988,7 +29988,7 @@ modern..: (Kites OR wind OR power)
 numFound: 953303
 --------------------------------------------------------------------------------
 classic.: ´seismic
-modern..: (Â´seismic)
+modern..: (´seismic)
 numFound: 4526
 --------------------------------------------------------------------------------
 classic.: =deuterium\r\n=lithium \r\n=boron\r\n"light elements"
@@ -37731,8 +37731,8 @@ classic.: gamma-ray gamma cosmic-ray "cosmic ray" galactic SNR PWD fermi-lat dif
 modern..: (gamma-ray OR gamma OR cosmic-ray OR "cosmic ray" OR galactic OR SNR OR PWD OR fermi-lat OR diffuse OR extended)
 numFound: 2264488
 --------------------------------------------------------------------------------
-classic.: +AGB post-AGB PN ï¿½Planetary Nebulaï¿½
-modern..: (+AGB OR post-AGB OR PN OR Ã¯Â¿Â½Planetary OR NebulaÃ¯Â¿Â½)
+classic.: +AGB post-AGB PN ïPlanetary Nebulaï
+modern..: (+AGB OR post-AGB OR PN OR ïPlanetary OR Nebulaï)
 numFound: 13017
 --------------------------------------------------------------------------------
 classic.: cataclysmic variable star
@@ -42383,8 +42383,8 @@ classic.: +stars emission line Be
 modern..: (+stars OR emission OR line OR Be)
 numFound: 535556
 --------------------------------------------------------------------------------
-classic.: Condensed Matter ;\r\ntopological insulator;\r\nStrongly Correlated Electrons;\r\nSuperconductivityï¼\r\ncold atom;\r\nquantum phase transition
-modern..: (Condensed OR Matter OR topological OR insulator OR Strongly OR Correlated OR Electrons OR SuperconductivityÃ¯Â¼Â OR cold OR atom OR quantum OR phase OR transition)
+classic.: Condensed Matter ;\r\ntopological insulator;\r\nStrongly Correlated Electrons;\r\nSuperconductivity\r\ncold atom;\r\nquantum phase transition
+modern..: (Condensed OR Matter OR topological OR insulator OR Strongly OR Correlated OR Electrons OR Superconductivity OR cold OR atom OR quantum OR phase OR transition)
 numFound: 4622610
 --------------------------------------------------------------------------------
 classic.: +protostar

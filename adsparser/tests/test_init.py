@@ -2,7 +2,7 @@ import os
 import unittest
 import adsparser
 import requests
-from urllib import urlencode
+from urllib.parse import urlencode
 
 
 class TestServices(unittest.TestCase):
@@ -55,7 +55,7 @@ class TestServices(unittest.TestCase):
                 ]:
             output = adsparser.parse_classic_keywords(test)
 
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
 
     def test_multiline(self):
@@ -66,7 +66,7 @@ class TestServices(unittest.TestCase):
                  '("solar flare" OR "solar dynamo" OR "magnetic reconnection")'),
         ]:
             output = adsparser.parse_classic_keywords(test)
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
     def test_singlequote(self):
         for (test, expected) in [
@@ -79,7 +79,7 @@ class TestServices(unittest.TestCase):
                  '(+"Sunyaev Zel\'dovich" OR "green\'s function")'),
         ]:
             output = adsparser.parse_classic_keywords(test)
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
     def test_plus(self):
         for (test, expected) in [
@@ -102,7 +102,7 @@ class TestServices(unittest.TestCase):
                  '(+LBV OR "luminous blue variable" OR G79.29+0.46)'),
         ]:
             output = adsparser.parse_classic_keywords(test)
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
     def test_equal(self):
         for (test, expected) in [
@@ -120,7 +120,7 @@ class TestServices(unittest.TestCase):
                  '(=star)'),
         ]:
             output = adsparser.parse_classic_keywords(test)
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
     def test_minus(self):
         for (test, expected) in [
@@ -148,7 +148,7 @@ class TestServices(unittest.TestCase):
                  '(that AND -this)'),
         ]:
             output = adsparser.parse_classic_keywords(test)
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
     def test_order_minus(self):
         for (test, expected) in [
@@ -175,7 +175,7 @@ class TestServices(unittest.TestCase):
                 ]:
             output = adsparser.parse_classic_keywords(test)
 
-            self.assertEquals(output, expected)
+            self.assertEqual(output, expected)
 
     def test_real_user_input(self):
         for (test, expected) in [
@@ -268,7 +268,7 @@ class TestServices(unittest.TestCase):
             ]:
                 output = adsparser.parse_classic_keywords(test)
 
-                self.assertEquals(output, expected)
+                self.assertEqual(output, expected)
 
     #@unittest.skip("only to massively verify impact of changes")
     def test_processed_real_user_input_file(self):
@@ -286,14 +286,14 @@ class TestServices(unittest.TestCase):
             for i in range(0, len(lst), n):
                 yield lst[i:i + n]
 
-        with open("adsparser/tests/data/processed.txt", "r") as processed:
+        with open("adsparser/tests/data/processed.txt", "r", encoding='utf8') as processed:
             processed_real_cases = processed.readlines()
             for chunk in chunks(processed_real_cases, 4):
                 test = chunk[1][10:]
                 expected_output = chunk[2][10:][:-1] # Remove \n
                 transformed_test = test.replace('\\r', '\r').replace('\\n', '\n')
                 output = adsparser.parse_classic_keywords(transformed_test)
-                self.assertEquals(output, expected_output)
+                self.assertEqual(output, expected_output)
 
     @unittest.skip("only for development")
     def test_real_user_input_file(self):
@@ -330,7 +330,7 @@ class TestServices(unittest.TestCase):
                 transformed_test = test.replace('\\r', '\r').replace('\\n', '\n')
                 try:
                     output = adsparser.parse_classic_keywords(transformed_test)
-                except Exception, e:
+                except Exception as e:
                     if str(e).startswith('No terminal defined for \'"\''):
                         counts['missing_double_quotes'] += 1
                     elif str(e).startswith('No terminal defined for \'\'\''):
@@ -354,7 +354,7 @@ class TestServices(unittest.TestCase):
                         success.write(test)
                         success.write(output+"\n")
         for key in counts:
-            self.assertEquals(counts[key], expected_counts[key], '[{}] {} != {}'.format(key, counts[key], expected_counts[key]))
+            self.assertEqual(counts[key], expected_counts[key], '[{}] {} != {}'.format(key, counts[key], expected_counts[key]))
 
     @unittest.skip("only for development")
     def test_real_user_input_file_against_solr(self):
@@ -382,7 +382,7 @@ class TestServices(unittest.TestCase):
                 transformed_test = test.replace('\\r', '\r').replace('\\n', '\n')
                 try:
                     output = adsparser.parse_classic_keywords(transformed_test)
-                except Exception, e:
+                except Exception as e:
                     counts['exception'] += 1
                 else:
                     if len(output) == 0:
@@ -410,3 +410,6 @@ class TestServices(unittest.TestCase):
                             success.write("modern..: "+output+"\n")
                             success.write("numFound: {}\n".format(num_found))
 
+
+if __name__ == '__main__':
+    unittest.main()
